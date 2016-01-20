@@ -1,15 +1,12 @@
 package com.stock.process;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +19,8 @@ import com.stock.model.StockMessage;
 import com.stock.model.StockMessage.StockDomain;
 import com.stock.repositories.StockHistoryRepository;
 import com.stock.repositories.StockMessageRepository;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component

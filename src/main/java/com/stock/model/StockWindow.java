@@ -15,9 +15,9 @@ public class StockWindow {
 	
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	private static final String FORMAT_LINE = "%s | %d %d %d %d %d | %d %d %d %d %d | %.2f %.2f %.2f %.2f %.2f | %.2f %.2f %.2f %.2f %.2f";
+	private static final String FORMAT_LINE = "%s | %d %d %d %d %d | %d %d %d %d %d | %.2f %.2f %.2f %.2f %.2f | %.2f %.2f %.2f %.2f %.2f\n";
 	
-	private static final String STOCK_HEAD = "%s(%s) | 量卖五 量卖四 量卖三 量卖二 量卖一 | 量买一 量买二 量买三 量买四 量买五 | 价卖五 价卖四 价卖三 价卖二 价卖一 | 价买一 价买二 价买三 价买四 价买五";
+	private static final String STOCK_HEAD = "%s(%s) | 量卖五 量卖四 量卖三 量卖二 量卖一 | 量买一 量买二 量买三 量买四 量买五 | 价卖五 价卖四 价卖三 价卖二 价卖一 | 价买一 价买二 价买三 价买四 价买五\n\n";
 
 	private String code;
 	private String name;
@@ -100,10 +100,16 @@ public class StockWindow {
 		if (vol == 0) {
 			return false;
 		}
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(this.date);
-		int hour = calendar.get(Calendar.HOUR_OF_DAY);
-		return hour > 9 && hour < 16;
+		
+//		Calendar calendar = Calendar.getInstance();
+//		calendar.setTime(new Date());
+//		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+//		int min = calendar.get(Calendar.MINUTE);
+//		int currentMin = hour * 60 + min;
+//		
+//		return  ( currentMin >= (9 * 60 + 30) && currentMin <= (11 * 60 + 30) ) ||
+//				( currentMin >= 13 * 60 && currentMin <= 15 * 60 );
+		return true;
 	}
 	
 	public String getHead() {

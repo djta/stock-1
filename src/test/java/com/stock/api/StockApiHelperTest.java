@@ -1,10 +1,12 @@
 package com.stock.api;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,6 +89,8 @@ public class StockApiHelperTest {
 	public void getAllXipan() throws FileNotFoundException, IOException{
 		String content = apiHelper.getCurrentMessageAll();
 		String[] contentArg = content.split("\n");
+		
+		StringBuilder sBuilder = new StringBuilder();
 		for (String line : contentArg) {
 			try {
 				StockWindow stockWin = new StockWindow(line);
@@ -94,11 +98,14 @@ public class StockApiHelperTest {
 					continue;
 				}
 				
-				if (stockWin.getBuyNum_2() + stockWin.getBuyNum_3() + stockWin.getBuyNum_4() + stockWin.getBuyNum_5() > 10000 && 
-						stockWin.getSellNum_2() + stockWin.getSellNum_3() + stockWin.getSellNum_4() + stockWin.getSellNum_5() > 10000 ) {
+				if (stockWin.getBuyNum_2() + stockWin.getBuyNum_3() + stockWin.getBuyNum_4() + stockWin.getBuyNum_5() > 5000 && 
+						stockWin.getSellNum_2() + stockWin.getSellNum_3() + stockWin.getSellNum_4() + stockWin.getSellNum_5() > 5000 ) {
 					System.out.println(stockWin.getHead());
 					System.out.println(stockWin);
 					System.out.println("");
+					File stockPk = new File("d:\\tmp\\stock.pk");
+					FileUtils.write(stockPk, stockWin.getHead(), true);
+					FileUtils.write(stockPk, stockWin.toString(), true);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
