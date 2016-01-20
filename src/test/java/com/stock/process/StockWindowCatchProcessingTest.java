@@ -12,15 +12,16 @@ public class StockWindowCatchProcessingTest {
 	
 	@Autowired
 	private StockWindowCatchProcessing catchProcess;
+	
+	private static final int INTERVAL = 1000 * 60;
 
 	@Test
 	public void process() {
 		while (true) {
 			try {
 				catchProcess.process();
-				Thread.sleep(1000 * 60);
+				Thread.sleep(INTERVAL);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
