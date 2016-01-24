@@ -10,7 +10,7 @@ public class StockTimeVol {
 	private int vol;
 	
 	public static StockTimeVol createInstance(String lineStr) {
-		if (lineStr.startsWith("09") == false) {
+		if (lineStr.indexOf(":") != 2) {
 			return null;
 		}
 		String[] columns = lineStr.split("\\s+");

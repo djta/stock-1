@@ -36,7 +36,7 @@ public class StockBuyAndSellCounting {
 			}
 			
 			float gap = stock.getPrice() - lastOne.getPrice();
-			if (gap > -0.02f && gap < 0.02f) {
+			if ( (gap > -0.011f && gap < 0.011f) || stock.getVol() < 300) {
 				lastOne = stock;
 				continue;
 			}
@@ -48,15 +48,22 @@ public class StockBuyAndSellCounting {
 			} else {
 				maps.put(key, jumpVol);
 			}
+			
+//			if (stock.getVol() >= 500) {
+//				System.out.println(String.format("%.2f    %d     %.2f", gap, stock.getVol(), stock.getPrice()));
+//			}
+			
 			lastOne = stock;
 		}
+		
+//		System.out.println("\n\n");
 		
 		Collection<JumpVol> allJumpVols = maps.values();
 		List<JumpVol> allJumpVolList = new ArrayList<>(allJumpVols);
 		Collections.sort(allJumpVolList);
 		int allVol = 0;
 		for (JumpVol jv : allJumpVolList) {
-			System.out.println(String.format("%.2f    %d", jv.getValue(), jv.getVol()));
+			System.out.println(String.format("%.2f    %d     %d", jv.getValue(), jv.getVol(), jv.getCount()));
 			allVol += jv.getVol();
 		}
 		System.out.println(String.format("Jump VOL: %d", allVol));
@@ -66,6 +73,7 @@ public class StockBuyAndSellCounting {
 	private static class JumpVol implements Comparable<JumpVol> {
 		private float value;
 		private int vol;
+		private int count =1;
 		
 		private JumpVol(float value, int vol) {
 			this.value = value;
@@ -78,6 +86,7 @@ public class StockBuyAndSellCounting {
 		
 		private void addVol(int vol) {
 			this.vol += vol;
+			count ++;
 		}
 		
 		@Override

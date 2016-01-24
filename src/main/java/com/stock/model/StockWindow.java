@@ -116,6 +116,18 @@ public class StockWindow {
 		return String.format(STOCK_HEAD, this.code,  this.name);
 	}
 	
+	public int getWeiCha() {
+		return buyNum_1 + buyNum_2 + buyNum_3 + buyNum_4 + buyNum_5 
+				- sellNum_1 - sellNum_2 - sellNum_3 - sellNum_4 - sellNum_5;
+	}
+	
+	public String getWeiBi() {
+		float weiBi = getWeiCha() * 100 / (buyNum_1 + buyNum_2 + buyNum_3 + buyNum_4 + buyNum_5 
+				+ sellNum_1 + sellNum_2 + sellNum_3 + sellNum_4 + sellNum_5);
+		
+		return String.format("%.2f%%", weiBi);
+	}
+	
 	public String toString() {
 		return String.format(FORMAT_LINE, 
 				DATE_FORMAT.format(date),
