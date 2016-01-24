@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.stock.model.StockMessage;
 import com.stock.model.StockMessage.StockDomain;
 import com.stock.model.StockWindow;
+import com.stock.model.builder.StockWindowBuilder;
 import com.stock.repositories.StockMessageRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -28,6 +29,9 @@ public class StockApiHelperTest {
 	
 	@Autowired
 	private StockMessageRepository stockRep;
+	
+	@Autowired
+	private StockWindowBuilder stockWindowBuilder;
 	
 	@Test
 	public void getAllStockMessagesTest() {
@@ -90,11 +94,10 @@ public class StockApiHelperTest {
 		String content = apiHelper.getCurrentMessageAll();
 		String[] contentArg = content.split("\n");
 		
-		StringBuilder sBuilder = new StringBuilder();
 		for (String line : contentArg) {
 			try {
-				StockWindow stockWin = new StockWindow(line);
-				if (stockWin.isValid() == false) {
+				StockWindow stockWin = stockWindowBuilder.buildInstanceFromApi(line);
+				if (stockWin == null || stockWin.isValid() == false) {
 					continue;
 				}
 				

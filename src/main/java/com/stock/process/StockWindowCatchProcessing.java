@@ -4,14 +4,19 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
 import com.stock.api.StockApiHelper;
 import com.stock.model.StockWindow;
+import com.stock.model.builder.StockWindowBuilder;
 
 @Component
 public class StockWindowCatchProcessing implements StockProcessing {
@@ -20,6 +25,10 @@ public class StockWindowCatchProcessing implements StockProcessing {
 	
 	@Autowired
 	private StockApiHelper apiHelper;
+	@Autowired
+	private StockWindowBuilder stockWindowBuilder;
+	@Autowired
+	private PathMatchingResourcePatternResolver resolver;
 	
 	private Calendar calendar = Calendar.getInstance();
 	
@@ -41,8 +50,8 @@ public class StockWindowCatchProcessing implements StockProcessing {
 		
 		for (String line : contentArg) {
 			try{
-				StockWindow stockWin = new StockWindow(line);
-				if (stockWin.isValid() == false) {
+				StockWindow stockWin = stockWindowBuilder.buildInstanceFromApi(line);
+				if (stockWin == null || stockWin.isValid() == false) {
 					continue;
 				}
 				
@@ -50,16 +59,22 @@ public class StockWindowCatchProcessing implements StockProcessing {
 				File stockFile = new File(filePath);
 				if (stockFile.exists() == false) {
 					FileUtils.write(stockFile, stockWin.getHead(), true);
+				} else if (latestRecords.containsKey(stockWin.getCode()) == false) {
+					Date lastDate = getLastDate(filePath);
+					latestRecords.put(stockWin.getCode(), lastDate);
 				}
 				
 				if ( stockWin.getDate().equals(latestRecords.get(stockWin.getCode())) ) {
 					//reduplicate data
 					continue;
-				} else {
-					latestRecords.put(stockWin.getCode(), stockWin.getDate());
+				}
+				
+				if (isNewDate(latestRecords.get(stockWin.getCode()), stockWin.getDate())) {
+					FileUtils.write(stockFile, "\n", true);
 				}
 				
 				FileUtils.write(stockFile, stockWin.toString(), true);
+				latestRecords.put(stockWin.getCode(), stockWin.getDate());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -87,6 +102,28 @@ public class StockWindowCatchProcessing implements StockProcessing {
 		int endPm = 15 * 60 + 10;
 		return  ( currentMin >= startAm && currentMin <= endAm ) ||
 				( currentMin >= startPm && currentMin <= endPm );
+	}
+	
+	private Date getLastDate(String filePath) {
+		try {
+			Resource res = resolver.getResource("file:" + filePath);
+			List<String> lines = IOUtils.readLines(res.getInputStream());
+			String latestLine = lines.get(lines.size() - 1);
+			String dateStr = latestLine.substring(0, latestLine.indexOf("|")).trim();
+			return StockWindowBuilder.DATE_FORMAT.parse(dateStr);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	private boolean isNewDate(Date d1, Date d2) {
+		Calendar cld1 = Calendar.getInstance();
+		Calendar cld2 = Calendar.getInstance();
+		cld1.setTime(d1);
+		cld2.setTime(d2);
+		return cld1.get(Calendar.DATE) != cld2.get(Calendar.DATE);
 	}
 
 }
