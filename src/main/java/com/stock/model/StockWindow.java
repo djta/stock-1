@@ -13,7 +13,7 @@ public class StockWindow {
 	
 	private static final String FORMAT_LINE = "%s | %.2f | %s | %.2f(%d) %.2f(%d) %.2f(%d) %.2f(%d) %.2f(%d) | %.2f(%d) %.2f(%d) %.2f(%d) %.2f(%d) %.2f(%d) | %s | %d | %.2f | %.2f\n";
 	
-	private static final String STOCK_HEAD = "%s(%s) | 当前价格 | 幅度 | 卖五 卖四 卖三 卖二 卖一 | 买一 买二 买三 买四 买五  | 委比 | 委差 | 昨日收盘  | 今日开盘\n\n";
+	private static final String STOCK_HEAD = "%s(%s) | 当前价格 | 幅度 | 卖五 卖四 卖三 卖二 卖一 | 买一 买二 买三 买四 买五  | 委比 | 委差 | 昨日收盘  | 今日开盘\n";
 
 	private String code;
 	private String name;
