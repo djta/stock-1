@@ -119,6 +119,10 @@ public class StockWindowCatchProcessing implements StockProcessing {
 	}
 	
 	private boolean isNewDate(Date d1, Date d2) {
+		if (d1 == null || d2 == null) {
+			return true;
+		}
+		
 		Calendar cld1 = Calendar.getInstance();
 		Calendar cld2 = Calendar.getInstance();
 		cld1.setTime(d1);
