@@ -49,10 +49,7 @@ public class StockWindow {
 	private float sellPrice_5;
 	
 	public boolean isValid() {
-		if (vol == 0) {
-			return false;
-		}
-		return true;
+		return vol > 0;
 	}
 	
 	public String getHead() {

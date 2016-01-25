@@ -96,7 +96,7 @@ public class StockApiHelperTest {
 		
 		for (String line : contentArg) {
 			try {
-				StockWindow stockWin = stockWindowBuilder.buildInstanceFromApi(line);
+				StockWindow stockWin = stockWindowBuilder.buildInstance(line);
 				if (stockWin == null || stockWin.isValid() == false) {
 					continue;
 				}
@@ -106,9 +106,9 @@ public class StockApiHelperTest {
 					System.out.println(stockWin.getHead());
 					System.out.println(stockWin);
 					System.out.println("");
-					File stockPk = new File("d:\\tmp\\stock.pk");
-					FileUtils.write(stockPk, stockWin.getHead(), true);
-					FileUtils.write(stockPk, stockWin.toString(), true);
+//					File stockPk = new File("d:\\tmp\\stock.pk");
+//					FileUtils.write(stockPk, stockWin.getHead(), true);
+//					FileUtils.write(stockPk, stockWin.toString(), true);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

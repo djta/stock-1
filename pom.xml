@@ -170,11 +170,17 @@
 			<artifactId>guava</artifactId>
 			<version>16.0</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.qiniu</groupId>
+			<artifactId>qiniu-java-sdk</artifactId>
+			<version>7.0.5</version>
+		</dependency>
 
 		<dependency>
-			<groupId>com.carrotgarden.jwrapper</groupId>
-			<artifactId>jwrapper-7zip-jbinding</artifactId>
-			<version>1.0.0</version>
+			<groupId>net.sf.sevenzipjbinding</groupId>
+			<artifactId>sevenzipjbinding</artifactId>
+			<version>9.20-2.00beta</version>
 		</dependency>
 
 		<dependency>

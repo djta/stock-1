@@ -1,6 +1,9 @@
 package com.stock.process;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +24,7 @@ import com.stock.model.builder.StockWindowBuilder;
 @Component
 public class StockWindowCatchProcessing implements StockProcessing {
 	
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	private static final String STOCK_PK_FILE_PATH = "E:\\stock_data\\pan_kou\\%s\\%s.pk";
 	
 	@Autowired
@@ -41,54 +45,86 @@ public class StockWindowCatchProcessing implements StockProcessing {
 
 	@Override
 	public void process() {
-//		if (inValidTime() == false) {
-//			return;
-//		}
+		if (inValidTime() == false) {
+			return;
+		}
 		
 		String content = apiHelper.getCurrentMessageAll();
 		String[] contentArg = content.split("\n");
 		
 		for (String line : contentArg) {
 			try{
-				StockWindow stockWin = stockWindowBuilder.buildInstanceFromApi(line);
+				StockWindow stockWin = stockWindowBuilder.buildInstance(line);
 				if (stockWin == null || stockWin.isValid() == false) {
 					continue;
 				}
 				
-				String filePath = String.format(STOCK_PK_FILE_PATH, getYearMonth(), stockWin.getCode());
-				File stockFile = new File(filePath);
-				if (stockFile.exists() == false) {
-					FileUtils.write(stockFile, stockWin.getHead(), true);
-				} else if (latestRecords.containsKey(stockWin.getCode()) == false) {
-					Date lastDate = getLastDate(filePath);
-					latestRecords.put(stockWin.getCode(), lastDate);
-				}
-				
-				if ( stockWin.getDate().equals(latestRecords.get(stockWin.getCode())) ) {
-					//reduplicate data
-					continue;
-				}
-				
-				if (isNewDate(latestRecords.get(stockWin.getCode()), stockWin.getDate())) {
-					FileUtils.write(stockFile, "\n", true);
-				}
-				
-				FileUtils.write(stockFile, stockWin.toString(), true);
-				latestRecords.put(stockWin.getCode(), stockWin.getDate());
+				persistent(stockWin);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
 	
-	private String getYearMonth() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(new Date());
-		int year = calendar.get(Calendar.YEAR);
-		int month = calendar.get(Calendar.MONTH) + 1;
-		
-		return year + "-" + month;
+	public void format() throws IOException {
+		Resource[] ress = resolver.getResources("file:E:/stock_data/pan_kou/2016-1_bak/*.pk");
+		System.out.println(ress.length);
+		for (Resource res : ress) {
+			try{
+				List<String> lines = IOUtils.readLines(res.getInputStream());
+				String headStr = lines.get(0);
+				int indexStart = headStr.indexOf("(");
+				int indexEnd = headStr.indexOf(")");
+				String code = headStr.substring(0, indexStart);
+				String name = headStr.substring(indexStart + 1, indexEnd);
+				for (String line : lines) {
+					StockWindow stockWin = stockWindowBuilder.buildInstance(line);
+					if (stockWin == null) {
+						continue;
+					}
+					stockWin.setCode(code);
+					stockWin.setName(name);
+					persistent(stockWin);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
+	
+	private void persistent(StockWindow stockWin) throws IOException {
+		String dateStr = DATE_FORMAT.format(stockWin.getDate());
+		String filePath = String.format(STOCK_PK_FILE_PATH, dateStr, stockWin.getCode());
+		File stockFile = new File(filePath);
+		
+		if (stockFile.exists() == false) {
+			FileUtils.write(stockFile, stockWin.getHead(), true);
+		} else if (latestRecords.containsKey(stockWin.getCode()) == false) {
+			Date lastDate = getLastDate(filePath);
+			latestRecords.put(stockWin.getCode(), lastDate);
+		}
+		
+		if ( stockWin.getDate().equals(latestRecords.get(stockWin.getCode())) ) {
+			//reduplicate data
+			return;
+		}
+		
+		if (isNewDate(latestRecords.get(stockWin.getCode()), stockWin.getDate())) {
+			FileUtils.write(stockFile, "\n", true);
+		}
+		
+		FileUtils.write(stockFile, stockWin.toString(), true);
+		latestRecords.put(stockWin.getCode(), stockWin.getDate());
+	}
+	
+//	private String getYearMonth() {
+//		Calendar calendar = Calendar.getInstance();
+//		calendar.setTime(new Date());
+//		int year = calendar.get(Calendar.YEAR);
+//		int month = calendar.get(Calendar.MONTH) + 1;
+//		
+//		return year + "-" + month;
+//	}
 	
 	private boolean inValidTime() {
 		calendar.setTime(new Date());
