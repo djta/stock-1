@@ -41,9 +41,9 @@ public class StockWindowCatchProcessing implements StockProcessing {
 
 	@Override
 	public void process() {
-//		if (inValidTime() == false) {
-//			return;
-//		}
+		if (inValidTime() == false) {
+			return;
+		}
 		
 		String content = apiHelper.getCurrentMessageAll();
 		String[] contentArg = content.split("\n");
