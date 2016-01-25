@@ -71,7 +71,7 @@ public class StockWindowCatchProcessing implements StockProcessing {
 		System.out.println(ress.length);
 		for (Resource res : ress) {
 			try{
-				List<String> lines = IOUtils.readLines(res.getInputStream());
+				List<String> lines = IOUtils.readLines(res.getInputStream(), "gb2312");
 				String headStr = lines.get(0);
 				int indexStart = headStr.indexOf("(");
 				int indexEnd = headStr.indexOf(")");
@@ -145,8 +145,13 @@ public class StockWindowCatchProcessing implements StockProcessing {
 			Resource res = resolver.getResource("file:" + filePath);
 			List<String> lines = IOUtils.readLines(res.getInputStream());
 			String latestLine = lines.get(lines.size() - 1);
-			String dateStr = latestLine.substring(0, latestLine.indexOf("|")).trim();
-			return StockWindowBuilder.DATE_FORMAT.parse(dateStr);
+			int index = latestLine.indexOf("|");
+			if (index > 0) {
+				String dateStr = latestLine.substring(0, latestLine.indexOf("|")).trim();
+				return StockWindowBuilder.DATE_FORMAT.parse(dateStr);
+			} else {
+				return null;
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
