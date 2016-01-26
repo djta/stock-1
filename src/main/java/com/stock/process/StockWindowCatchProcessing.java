@@ -7,8 +7,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -18,14 +20,17 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
 import com.stock.api.StockApiHelper;
+import com.stock.fileServer.qiniu.FileServerQiNiu;
 import com.stock.model.StockWindow;
 import com.stock.model.builder.StockWindowBuilder;
+import com.stock.util.ZipUtil;
 
 @Component
 public class StockWindowCatchProcessing implements StockProcessing {
 	
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-	private static final String STOCK_PK_FILE_PATH = "E:\\stock_data\\pan_kou\\%s\\%s.pk";
+	private static final String STOCK_PK_FILE_PATH = "E:/stock_data/pan_kou/%s/%s.pk";
+	private static final String STOCK_PK_FOLDER_PATH = "E:/stock_data/pan_kou/%s";
 	
 	@Autowired
 	private StockApiHelper apiHelper;
@@ -33,10 +38,14 @@ public class StockWindowCatchProcessing implements StockProcessing {
 	private StockWindowBuilder stockWindowBuilder;
 	@Autowired
 	private PathMatchingResourcePatternResolver resolver;
+	@Autowired
+	private FileServerQiNiu qiNiu;
 	
 	private Calendar calendar = Calendar.getInstance();
 	
 	private Map<String, Date> latestRecords = new HashMap<>();
+	
+	private boolean needUpload = false;
 	
 	@Override
 	public int getPriority() {
@@ -45,13 +54,19 @@ public class StockWindowCatchProcessing implements StockProcessing {
 
 	@Override
 	public void process() {
-		if (inValidTime() == false) {
+		
+		if (inOpenTime() == false) {
+			if (needUpload && inUploadTime() == true) {
+				//把数据打包上传到 文件服务器
+				String folderName = DATE_FORMAT.format(new Date());
+				zipAndUploadFile(folderName);
+				needUpload = false;
+			}
 			return;
 		}
 		
 		String content = apiHelper.getCurrentMessageAll();
 		String[] contentArg = content.split("\n");
-		
 		for (String line : contentArg) {
 			try{
 				StockWindow stockWin = stockWindowBuilder.buildInstance(line);
@@ -66,9 +81,10 @@ public class StockWindowCatchProcessing implements StockProcessing {
 		}
 	}
 	
-	public void format() throws IOException {
-		Resource[] ress = resolver.getResources("file:E:/stock_data/pan_kou/2016-1_bak/*.pk");
+	public void format(String filePath) throws IOException {
+		Resource[] ress = resolver.getResources(filePath);
 		System.out.println(ress.length);
+		Set<String> folders = new HashSet<>();
 		for (Resource res : ress) {
 			try{
 				List<String> lines = IOUtils.readLines(res.getInputStream(), "gb2312");
@@ -85,10 +101,16 @@ public class StockWindowCatchProcessing implements StockProcessing {
 					stockWin.setCode(code);
 					stockWin.setName(name);
 					persistent(stockWin);
+					folders.add(DATE_FORMAT.format(stockWin.getDate()));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+		
+		//压缩上传所有的文件夹
+		for (String folderName : folders) {
+			zipAndUploadFile(folderName);
 		}
 	}
 	
@@ -115,6 +137,13 @@ public class StockWindowCatchProcessing implements StockProcessing {
 		
 		FileUtils.write(stockFile, stockWin.toString(), true);
 		latestRecords.put(stockWin.getCode(), stockWin.getDate());
+		needUpload = true;
+	}
+	
+	private void zipAndUploadFile(String folderName) {
+		String folderPath = String.format(STOCK_PK_FOLDER_PATH, folderName);
+		String zipPath = ZipUtil.zip(folderPath).getPath();
+		qiNiu.upload(zipPath);
 	}
 	
 //	private String getYearMonth() {
@@ -126,11 +155,8 @@ public class StockWindowCatchProcessing implements StockProcessing {
 //		return year + "-" + month;
 //	}
 	
-	private boolean inValidTime() {
-		calendar.setTime(new Date());
-		int hour = calendar.get(Calendar.HOUR_OF_DAY);
-		int min = calendar.get(Calendar.MINUTE);
-		int currentMin = hour * 60 + min;
+	private boolean inOpenTime() {
+		int currentMin = getCurrentMin();
 		
 		int startAm = 9 * 60 + 30 - 10;
 		int endAm = 11 * 60 + 30 + 10;
@@ -138,6 +164,19 @@ public class StockWindowCatchProcessing implements StockProcessing {
 		int endPm = 15 * 60 + 10;
 		return  ( currentMin >= startAm && currentMin <= endAm ) ||
 				( currentMin >= startPm && currentMin <= endPm );
+	}
+	
+	private boolean inUploadTime() {
+		int currentMin = getCurrentMin();
+		
+		return currentMin > 15 * 60 + 15;
+	}
+	
+	private int getCurrentMin() {
+		calendar.setTime(new Date());
+		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		int min = calendar.get(Calendar.MINUTE);
+		return hour * 60 + min;
 	}
 	
 	private Date getLastDate(String filePath) {

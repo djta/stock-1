@@ -57,7 +57,13 @@ public class StockWindow {
 	}
 	
 	public String getPricePercent() {
-		float percent = (currentPrice - yesterdayClose) * 100 / yesterdayClose;
+		float percent;
+		if (currentPrice - yesterdayClose == 0f) {
+			percent = 0;
+		} else {
+			percent = (currentPrice - yesterdayClose) * 100 / yesterdayClose;
+		}
+		
 		return String.format("%.2f%%", percent);
 	}
 	

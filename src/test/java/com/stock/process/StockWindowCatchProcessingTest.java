@@ -32,7 +32,8 @@ public class StockWindowCatchProcessingTest {
 	@Test
 	public void formatTest() {
 		try {
-			catchProcess.format();
+			String filePath = "file:E:/stock_data/pan_kou/2016-1/*.pk";
+			catchProcess.format(filePath);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
