@@ -29,7 +29,7 @@ public class StockWindowCatchProcessingTest {
 		}
 	}
 	
-	@Test
+//	@Test
 	public void formatTest() {
 		try {
 			String filePath = "file:E:/stock_data/pan_kou/2016-1/*.pk";
