@@ -15,6 +15,7 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
@@ -23,14 +24,18 @@ import com.stock.api.StockApiHelper;
 import com.stock.fileServer.qiniu.FileServerQiNiu;
 import com.stock.model.StockWindow;
 import com.stock.model.builder.StockWindowBuilder;
-import com.stock.util.ZipUtil;
+import com.stock.util.ZipUploadUtil;
 
 @Component
 public class StockWindowCatchProcessing implements StockProcessing {
 	
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-	private static final String STOCK_PK_FILE_PATH = "E:/stock_data/pan_kou/%s/%s.pk";
-	private static final String STOCK_PK_FOLDER_PATH = "E:/stock_data/pan_kou/%s";
+	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	
+	@Value("${file.path.stock.pankou}")
+	private String filePathPanKou;
+	
+	@Value("${folder.path.stock.pankou}")
+	private String folderPathPanKou;
 	
 	@Autowired
 	private StockApiHelper apiHelper;
@@ -59,7 +64,8 @@ public class StockWindowCatchProcessing implements StockProcessing {
 			if (needUpload && inUploadTime() == true) {
 				//把数据打包上传到 文件服务器
 				String folderName = DATE_FORMAT.format(new Date());
-				zipAndUploadFile(folderName);
+				String folderPath = String.format(folderPathPanKou, folderName);
+				ZipUploadUtil.zipUpload(folderPath);
 				needUpload = false;
 			}
 			return;
@@ -110,13 +116,14 @@ public class StockWindowCatchProcessing implements StockProcessing {
 		
 		//压缩上传所有的文件夹
 		for (String folderName : folders) {
-			zipAndUploadFile(folderName);
+			String folderPath = String.format(folderPathPanKou, folderName);
+			ZipUploadUtil.zipUpload(folderPath);
 		}
 	}
 	
 	private void persistent(StockWindow stockWin) throws IOException {
 		String dateStr = DATE_FORMAT.format(stockWin.getDate());
-		String filePath = String.format(STOCK_PK_FILE_PATH, dateStr, stockWin.getCode());
+		String filePath = String.format(filePathPanKou, dateStr, stockWin.getCode());
 		File stockFile = new File(filePath);
 		
 		if (stockFile.exists() == false) {
@@ -138,12 +145,6 @@ public class StockWindowCatchProcessing implements StockProcessing {
 		FileUtils.write(stockFile, stockWin.toString(), true);
 		latestRecords.put(stockWin.getCode(), stockWin.getDate());
 		needUpload = true;
-	}
-	
-	private void zipAndUploadFile(String folderName) {
-		String folderPath = String.format(STOCK_PK_FOLDER_PATH, folderName);
-		String zipPath = ZipUtil.zip(folderPath).getPath();
-		qiNiu.upload(zipPath);
 	}
 	
 //	private String getYearMonth() {

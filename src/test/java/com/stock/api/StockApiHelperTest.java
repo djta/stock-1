@@ -121,8 +121,7 @@ public class StockApiHelperTest {
 	public void getStockDetail() {
 		String code = "000933";
 		String details = apiHelper.getStockExchangeDetail(code);
-		details = details.substring(1, details.length() - 1);
-		details = details.replace("\",\"", "\n");
+		details = details.replace("\",\"", "\n").replace("\"", "").replace(",", " ");
 		System.out.println(details);
 	}
 }

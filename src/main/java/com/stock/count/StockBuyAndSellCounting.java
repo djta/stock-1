@@ -49,14 +49,8 @@ public class StockBuyAndSellCounting {
 				maps.put(key, jumpVol);
 			}
 			
-//			if (stock.getVol() >= 500) {
-//				System.out.println(String.format("%.2f    %d     %.2f", gap, stock.getVol(), stock.getPrice()));
-//			}
-			
 			lastOne = stock;
 		}
-		
-//		System.out.println("\n\n");
 		
 		Collection<JumpVol> allJumpVols = maps.values();
 		List<JumpVol> allJumpVolList = new ArrayList<>(allJumpVols);

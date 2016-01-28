@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -32,9 +33,12 @@ public class StockMessageHolder {
 			return;
 		}
 		
-		List<String> lines = IOUtils.readLines(stockRes.getInputStream(), StockApiHelper.CODE_CN);
+		List<String> lines = IOUtils.readLines(stockRes.getInputStream(), StockApiHelper.CODE_UTF_8);
 		
 		for (String line : lines) {
+			if (StringUtils.isEmpty(line)) {
+				continue;
+			}
 			String[] columns = line.split(" ");
 			StockMessage stock = new StockMessage();
 			stock.setCode(columns[0]);
