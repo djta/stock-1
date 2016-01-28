@@ -25,8 +25,8 @@ public class StockApiHelper {
 	
 	public static final String GET_STOCK_DETAIL = "http://hqdigi2.eastmoney.com/EM_Quote2010NumericApplication/CompatiblePage.aspx?Type=OB&stk=%s&page=%d";
 	
-	private static final String CODE_CN = "gb2312";
-	private static final String CODE_UTF_8 = "UTF-8";
+	public static final String CODE_CN = "gb2312";
+	public static final String CODE_UTF_8 = "UTF-8";
 	
 	private Pattern pagePattern = Pattern.compile("pages:(\\d+),");
 	
@@ -67,7 +67,7 @@ public class StockApiHelper {
 		return null;
 	}
 	
-	public String getStockDetail(String code) {
+	public String getStockExchangeDetail(String code) {
 		String codeDomain = code.startsWith("6") ? code + "1" : code + "2";
 		String url = String.format(GET_STOCK_DETAIL, codeDomain, 0);
 		String content = getHttpResponse(url, CODE_UTF_8);

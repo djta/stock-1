@@ -1,12 +1,10 @@
 package com.stock.api;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -122,7 +120,7 @@ public class StockApiHelperTest {
 	@Test
 	public void getStockDetail() {
 		String code = "000933";
-		String details = apiHelper.getStockDetail(code);
+		String details = apiHelper.getStockExchangeDetail(code);
 		details = details.substring(1, details.length() - 1);
 		details = details.replace("\",\"", "\n");
 		System.out.println(details);
