@@ -24,7 +24,7 @@ public class StockMessageHolder {
 	@Autowired
 	private PathMatchingResourcePatternResolver resolver;
 
-	private Map<String, StockMessage> stockHolder = new LinkedHashMap<>();
+	private static Map<String, StockMessage> stockHolder = new LinkedHashMap<>();
 	
 	@PostConstruct
 	public void initialize() throws IOException {
@@ -39,20 +39,21 @@ public class StockMessageHolder {
 			if (StringUtils.isEmpty(line)) {
 				continue;
 			}
-			String[] columns = line.split(" ");
+			String[] columns = line.split("\t");
 			StockMessage stock = new StockMessage();
 			stock.setCode(columns[0]);
 			stock.setName(columns[1]);
 			stock.setDomain(StockDomain.valueOf(columns[2]));
+			stock.setCirculation(Float.valueOf(columns[3]));
 			stockHolder.put(stock.getCode(), stock);
 		}
 	}
 	
-	public Collection<StockMessage> getAllStocks() {
+	public static Collection<StockMessage> getAllStocks() {
 		return stockHolder.values();
 	}
 	
-	public StockMessage getStockMessageByCode(String code) {
+	public static StockMessage getStockMessageByCode(String code) {
 		return stockHolder.get(code);
 	}
 }

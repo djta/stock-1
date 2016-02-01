@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,6 +17,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
@@ -45,6 +47,8 @@ public class StockWindowCatchProcessing implements StockProcessing {
 	private PathMatchingResourcePatternResolver resolver;
 	@Autowired
 	private FileServerQiNiu qiNiu;
+	@Autowired
+	private ReloadableResourceBundleMessageSource messageResource;
 	
 	private Calendar calendar = Calendar.getInstance();
 	
@@ -116,14 +120,16 @@ public class StockWindowCatchProcessing implements StockProcessing {
 		
 		//压缩上传所有的文件夹
 		for (String folderName : folders) {
-			String folderPath = String.format(folderPathPanKou, folderName);
+			String folderPath = messageResource.getMessage("folder.path.stock.pankou", 
+					new Object[]{folderName}, Locale.getDefault());
 			ZipUploadUtil.zipUpload(folderPath);
 		}
 	}
 	
 	private void persistent(StockWindow stockWin) throws IOException {
 		String dateStr = DATE_FORMAT.format(stockWin.getDate());
-		String filePath = String.format(filePathPanKou, dateStr, stockWin.getCode());
+		String filePath = messageResource.getMessage("file.path.stock.pankou", 
+				new Object[]{dateStr, stockWin.getCode()}, Locale.getDefault());
 		File stockFile = new File(filePath);
 		
 		if (stockFile.exists() == false) {
@@ -146,15 +152,6 @@ public class StockWindowCatchProcessing implements StockProcessing {
 		latestRecords.put(stockWin.getCode(), stockWin.getDate());
 		needUpload = true;
 	}
-	
-//	private String getYearMonth() {
-//		Calendar calendar = Calendar.getInstance();
-//		calendar.setTime(new Date());
-//		int year = calendar.get(Calendar.YEAR);
-//		int month = calendar.get(Calendar.MONTH) + 1;
-//		
-//		return year + "-" + month;
-//	}
 	
 	private boolean inOpenTime() {
 		int currentMin = getCurrentMin();

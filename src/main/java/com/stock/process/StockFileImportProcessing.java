@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -16,11 +18,8 @@ import org.springframework.stereotype.Component;
 
 import com.stock.model.StockHistory;
 import com.stock.model.StockMessage;
-import com.stock.model.StockMessage.StockDomain;
 import com.stock.repositories.StockHistoryRepository;
 import com.stock.repositories.StockMessageRepository;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -54,19 +53,39 @@ public class StockFileImportProcessing implements StockProcessing {
 		for (Resource resource : allFiles) {
 			try {
 				System.out.println(resource.getFilename());
-				StockMessage stockMsg = parseStockMessage(resource.getFilename());
 				String fileContent = IOUtils.toString(resource.getInputStream(), "gb2312");
 				List<StockHistory> allHis = parseStockHistory(fileContent);
-				stockMsg.setName(allHis.get(0).getName());
 				
-				messageRep.save(stockMsg);
 				historyRep.save(allHis);
-				messageRep.flush();
 				historyRep.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
 				continue;
 			}
+		}
+	}
+	
+	public void importStockMessage() throws IOException {
+		Resource[] resource = resolver.getResources("file:D:/new_tdx/T0002/export/沪深Ａ股*.txt");
+		
+		System.out.println(resource[0].getFilename());
+		List<String> lines = IOUtils.readLines(resource[0].getInputStream(), "gb2312");
+		for (String line : lines) {
+			String[] columns = line.split("\t");
+			if (columns.length == 0 || columns[0].matches("\\d+") == false) {
+				System.out.println(line);
+				continue;
+			}
+			
+			StockMessage stockMsg = new StockMessage();
+			stockMsg.setCode(columns[0].trim());
+			stockMsg.setName(columns[1].trim());
+			try {
+				stockMsg.setCirculation(Float.valueOf(columns[2]));
+			} catch (Exception e) {
+				stockMsg.setCirculation(0.0001f);
+			}
+			messageRep.saveAndFlush(stockMsg);
 		}
 	}
 	
@@ -109,19 +128,5 @@ public class StockFileImportProcessing implements StockProcessing {
 		}
 		
 		return allHis;
-	}
-	
-	private StockMessage parseStockMessage(String fileName) {
-		int j = fileName.indexOf("#");
-		int txt = fileName.indexOf(".txt");
-		
-		String domain = fileName.substring(0, j);
-		String code = fileName.substring(j+1, txt);
-		
-		StockMessage stockMsg = new StockMessage();
-		stockMsg.setCode(code);
-		stockMsg.setDomain(StockDomain.valueOf(domain));
-		
-		return stockMsg;
 	}
 }

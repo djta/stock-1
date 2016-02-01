@@ -7,7 +7,6 @@ import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
 
@@ -20,13 +19,6 @@ import com.stock.util.ZipUploadUtil;
 @Component
 public class StockExchangeDetailCatchProcessing implements StockProcessing {
 	
-	@Value("${file.path.stock.exchange}")
-	private String filePathExchange;
-	
-	@Value("${folder.path.stock.exchange}")
-	private String folderPathExchange;
-
-	@Autowired private StockMessageHolder stockHolder;
 	@Autowired private StockApiHelper stockApi;
 	@Autowired private ReloadableResourceBundleMessageSource messageResource;
 	
@@ -40,7 +32,7 @@ public class StockExchangeDetailCatchProcessing implements StockProcessing {
 	@Override
 	public void process() {
 		dateStr = StockWindowCatchProcessing.DATE_FORMAT.format(new Date());
-		Collection<StockMessage> allStocks = stockHolder.getAllStocks();
+		Collection<StockMessage> allStocks = StockMessageHolder.getAllStocks();
 		for (StockMessage stock : allStocks) {
 			handleOneStock(stock);
 		}

@@ -35,7 +35,7 @@ public class WriterStockNameHelper {
 			if (content.length() > 0) {
 				content.append("\n");
 			}
-			content.append(String.format("%s %s %s", stock.getCode(), stock.getName(), stock.getDomain()));
+			content.append(String.format("%s\t%s\t%s\t%s", stock.getCode(), stock.getName(), stock.getDomain(), stock.getCirculation()));
 		}
 		
 		FileUtils.write(new File(filePath), content.toString());

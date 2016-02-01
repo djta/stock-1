@@ -39,7 +39,7 @@ public class StockDownwardTest {
 	
 	@Test
 	public void selectBetween() throws ParseException {
-		Timestamp timeStart = new Timestamp(StockDownward.smpFormat.parse("2014-01-01").getTime());
+		Timestamp timeStart = new Timestamp(StockDownward.smpFormat.parse("2015-12-01").getTime());
 		Timestamp timeEnd = new Timestamp(System.currentTimeMillis());
 		List<StockHistory> allHis = stockHisRepo.findAllByCodeAndDateBetween("300070", timeStart, timeEnd);
 		StockDownward stockDown = new StockDownward(allHis);
@@ -49,19 +49,24 @@ public class StockDownwardTest {
 	
 	@Test
 	public void selectLatest() throws ParseException {
-		Timestamp timeStart = new Timestamp(StockDownward.smpFormat.parse("2014-01-01").getTime());
+		Timestamp timeStart = new Timestamp(StockDownward.smpFormat.parse("2015-12-01").getTime());
 		Timestamp timeEnd = new Timestamp(System.currentTimeMillis());
+//		Timestamp timeEnd = new Timestamp(StockDownward.smpFormat.parse("2015-11-01").getTime());
 		
-		Timestamp comparDate = new Timestamp(StockDownward.smpFormat.parse("2015-01-01").getTime());
+		/*Timestamp comparDate = new Timestamp(StockDownward.smpFormat.parse("2015-01-01").getTime());*/
 		
 		List<StockDownward> allStockDowns = new ArrayList<>();
 		List<StockMessage> allStocks = stockMsgRepo.findAll();
 		for (StockMessage stockMsg : allStocks) {
+			if (stockMsg.getCirculation() > 10 * 10000f || stockMsg.getCirculation() < 1 * 10000f) {
+				continue;
+			}
+			
 			List<StockHistory> allHis = stockHisRepo.findAllByCodeAndDateBetween(stockMsg.getCode(), timeStart, timeEnd);
 			StockDownward stockDown = new StockDownward(allHis);
 			stockDown.select();
 			
-			if (stockDown.getPotential() > 3.5f && stockDown.getLowPoint().getDate().after(comparDate)) {
+			if (stockDown.getPotential() < -46f /*&& stockDown.getPotential()<=2f*/ /*&& stockDown.getLowPoint().getDate().after(comparDate)*/) {
 				allStockDowns.add(stockDown);
 			}
 		}
@@ -70,7 +75,7 @@ public class StockDownwardTest {
 
 			@Override
 			public int compare(StockDownward o1, StockDownward o2) {
-				if ( o2.getDownResistance() > o1.getDownResistance() ) {
+				if ( o2.getPerVol() > o1.getPerVol() ) {
 					return -1;
 				} else {
 					return 1;

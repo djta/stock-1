@@ -11,7 +11,4 @@ public interface StockMessageRepository extends JpaRepository<StockMessage, Long
 
 	@Query("SELECT s FROM StockMessage s ORDER BY s.id")
 	public List<StockMessage> findAllOrderById();
-	
-//	@Query("SELECT s FROM StockMessage s WHERE finished = true")
-//	public List<StockMessage> findAllFinished();
 }

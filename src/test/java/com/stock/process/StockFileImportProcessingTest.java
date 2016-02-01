@@ -1,5 +1,7 @@
 package com.stock.process;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,5 +18,10 @@ public class StockFileImportProcessingTest {
 	@Test
 	public void processTest() {
 		stockImportProcess.process();
+	}
+	
+	@Test
+	public void importStockMessageTest() throws IOException {
+		stockImportProcess.importStockMessage();
 	}
 }

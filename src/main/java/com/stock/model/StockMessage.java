@@ -31,9 +31,22 @@ public class StockMessage extends BaseDo {
 	@Column(name="name", length=12)
 	private String name;
 	
+	//万
+	@Column(name="circulation")
+	private float circulation;
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name="domain", length=2)
 	private StockDomain domain;
+	
+	public void setCode(String code) {
+		this.code = code;
+		if (code.startsWith("6")) {
+			domain = StockDomain.SH;
+		} else {
+			domain = StockDomain.SZ;
+		}
+	}
 	
 	public String getStockCode() {
 		return domain.name().toLowerCase() + code;
