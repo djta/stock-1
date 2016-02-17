@@ -81,7 +81,7 @@ public class StockApiHelper {
 		int dataEnd = content.indexOf("]");
 		StringBuilder contentBuilder = new StringBuilder(content.substring(dataStart + 1, dataEnd));
 		
-		for (int i=1; i<=pageCounts; i++) {
+		for (int i=2; i<=pageCounts; i++) {
 			url = String.format(GET_STOCK_DETAIL, codeDomain, i);
 			content = getHttpResponse(url, CODE_UTF_8);
 			dataStart = content.indexOf("[");

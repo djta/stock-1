@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class StockTimeVol {
 	
-	private int time;
+	private String time;
 	private float price;
 	private int vol;
 	
@@ -16,6 +16,7 @@ public class StockTimeVol {
 		String[] columns = lineStr.split("\\s+");
 		
 		StockTimeVol stock = new StockTimeVol();
+		stock.setTime(columns[0]);
 		stock.setPrice(Float.valueOf(columns[1]));
 		stock.setVol(Integer.valueOf(columns[2]));
 		return stock;
