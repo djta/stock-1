@@ -6,7 +6,7 @@ public class ZipUtilTest {
 
 	@Test
 	public void zipTest() {
-		String filePath = "E:/stock_data/pan_kou/2016-1";
+		String filePath = "E:/stock_data/pan_kou/2016-03-02";
 		ZipUtil.zip(filePath);
 	}
 	

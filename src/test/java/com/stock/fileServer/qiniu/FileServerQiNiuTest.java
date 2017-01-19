@@ -15,7 +15,7 @@ public class FileServerQiNiuTest {
 	
 	@Test
 	public void uploadTest() {
-		String fileName = "E:/stock_data/pan_kou/2016-1.zip";
+		String fileName = "E:/stock_data/pan_kou/2016-03-02.zip";
 		qiNiu.upload(fileName);
 	}
 }

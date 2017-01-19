@@ -16,7 +16,12 @@ public class ZipUploadUtil {
 	}
 	
 	public static void zipUpload(String folderPath) {
-		String zipPath = ZipUtil.zip(folderPath).getPath();
-		qiniu.upload(zipPath);
+		try {
+			String zipPath = ZipUtil.zip(folderPath).getPath();
+			qiniu.upload(zipPath);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

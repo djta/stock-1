@@ -16,7 +16,6 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -33,11 +32,8 @@ public class StockWindowCatchProcessing implements StockProcessing {
 	
 	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	
-	@Value("${file.path.stock.pankou}")
-	private String filePathPanKou;
-	
-	@Value("${folder.path.stock.pankou}")
-	private String folderPathPanKou;
+//	@Value("${folder.path.stock.pankou}")
+	private String folderPathPanKou = "E:/stock_data/pan_kou/%s";
 	
 	@Autowired
 	private StockApiHelper apiHelper;
@@ -49,6 +45,8 @@ public class StockWindowCatchProcessing implements StockProcessing {
 	private FileServerQiNiu qiNiu;
 	@Autowired
 	private ReloadableResourceBundleMessageSource messageResource;
+	@Autowired
+	private StockExchangeDetailCatchProcessing exchangeProcess;
 	
 	private Calendar calendar = Calendar.getInstance();
 	
@@ -70,6 +68,9 @@ public class StockWindowCatchProcessing implements StockProcessing {
 				String folderName = DATE_FORMAT.format(new Date());
 				String folderPath = String.format(folderPathPanKou, folderName);
 				ZipUploadUtil.zipUpload(folderPath);
+				
+				exchangeProcess.process();
+				
 				needUpload = false;
 			}
 			return;
