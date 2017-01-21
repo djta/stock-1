@@ -13,6 +13,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+
 @Component
 public class StockApiHelper {
 	
@@ -25,8 +26,15 @@ public class StockApiHelper {
 	
 	public static final String GET_STOCK_DETAIL = "http://hqdigi2.eastmoney.com/EM_Quote2010NumericApplication/CompatiblePage.aspx?Type=OB&stk=%s&page=%d";
 	
+	public static final String GET_STOCK_HOLDER = "http://f10.eastmoney.com/f10_v2/ShareholderResearch.aspx?code=%s";
+	
+	public static final String GET_STOCK_BASE = "http://vip.stock.finance.sina.com.cn/corp/go.php/vCI_CorpInfo/stockid/%s.phtml";
+	
+	public static final String GET_ALL_STOCK = "http://money.finance.sina.com.cn/d/api/openapi_proxy.php/?__s=[[\"hq\",\"hs_a\",\"\",0,%d,80]]&callback=FDC_DC.theTableData";
+	
 	public static final String CODE_CN = "gb2312";
 	public static final String CODE_UTF_8 = "UTF-8";
+	public static final String CODE_IOS_8859_1 = "ISO8859-1";
 	
 	private Pattern pagePattern = Pattern.compile("pages:(\\d+),");
 	
@@ -46,6 +54,18 @@ public class StockApiHelper {
 	
 	public String getTodayMessage(String code) {
 		return getHttpResponse(String.format(GET_STOCK_CURRENT, code), CODE_CN);
+	}
+	
+	public String getStockHolders(String code) {
+		return getHttpResponse(String.format(GET_STOCK_HOLDER, code), CODE_UTF_8);
+	}
+	
+	public String getStockBase(String code) {
+		return getHttpResponse(String.format(GET_STOCK_BASE, code), CODE_CN);
+	}
+	
+	public String getAllStock(int pageIndex) {
+		return getHttpResponse(String.format(GET_ALL_STOCK, pageIndex), CODE_IOS_8859_1);
 	}
 	
 	public String getCurrentMessageAll() {
