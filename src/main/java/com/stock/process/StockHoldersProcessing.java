@@ -1,6 +1,7 @@
 package com.stock.process;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class StockHoldersProcessing implements StockProcessing {
 //			}
 		}
 		
-		allHolders.sort(new Comparator<StockHolder>(){
+		Collections.sort(allHolders, new Comparator<StockHolder>(){
 			@Override
 			public int compare(StockHolder o1, StockHolder o2) {
 				return (int)((o1.getDif(2) - o2.getDif(2)) * 1000);
