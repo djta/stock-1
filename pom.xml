@@ -193,6 +193,14 @@
 			<artifactId>mail</artifactId>
 			<version>1.4.7</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.taobao</groupId>
+			<artifactId>taobao.sdk</artifactId>
+			<version>2016.6.7</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/target/lib/taobao-sdk-java-auto_1455552377940-20160607.jar</systemPath>
+		</dependency>
 
 		<!-- <dependency> <groupId>com.baidu.bcs</groupId> <artifactId>baidu-sdk</artifactId> 
 			<version>1.4.5</version> </dependency> -->

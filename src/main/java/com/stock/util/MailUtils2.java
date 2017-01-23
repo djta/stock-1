@@ -29,17 +29,17 @@ public class MailUtils2 {
         return javaMailSender;
 	}
 	
-	public static void sendMail() {
+	public static void sendMail(String subject, String content, String... toAddress) {
 		JavaMailSenderImpl senderImpl = createJavaMailSenderImpl();
         MimeMessage mailMessage = senderImpl.createMimeMessage();
         
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mailMessage, true, "utf-8");
             helper.setFrom("760680733@qq.com");// 设置发件人
-            helper.setTo(new String[] {"760680733@qq.com", "zjie@aerohive.com"});// 设置收件人
+            helper.setTo(toAddress);// 设置收件人
 //            helper.setCc(cc);// 设置抄送
-            helper.setSubject("Test");// 设置主题
-            helper.setText("Hello");// 邮件体
+            helper.setSubject(subject);// 设置主题
+            helper.setText(content);// 邮件体
             senderImpl.send(mailMessage);// 发送邮件
         } catch (Exception e) {
             try {
@@ -50,6 +50,9 @@ public class MailUtils2 {
     }
 	
 	public static void main(String... args) {
-		sendMail();
+		String subject = "601766（中国中车）现价9.92";
+		String content = "大于 9.9 符合买入条件 ";
+		String[] toAddr = new String[]{"13777862834@139.com"};
+		sendMail(subject, content, toAddr);
 	}
 }
