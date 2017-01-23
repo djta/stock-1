@@ -13,8 +13,8 @@ import javax.mail.internet.MimeMessage;
 
 public class MailUtils {
 	
-	private static final String USER_NAME = "zhangjie0574";
-	private static final String PASSWORD = "3'ylfml";
+	private static final String USER_NAME = "760680733";
+	private static final String PASSWORD = "mhnxqrzxicycbdbc";
 
 //	private static final Properties props = new Properties();
 	private static Session session;
@@ -31,9 +31,10 @@ public class MailUtils {
 	public static void sendMail(String toAddress, String subject, String content) throws Exception {
 		
 		Properties props = new Properties();
-		props.setProperty("mail.transport.protocol", "smtp");
-		props.setProperty("mail.host", "smtp.126.com");
-		props.setProperty("mail.smtp.auth", "true");
+		props.setProperty("mail.transport.protocol", "pop3");
+		props.setProperty("mail.host", "pop.qq.com");
+		props.setProperty("mail.smtp.port", "995");
+//		props.setProperty("mail.smtp.auth", "true");
 		props.setProperty("mail.debug", "true");
 		
 		session = Session.getInstance(props, new Authenticator() {
@@ -46,8 +47,8 @@ public class MailUtils {
 		
 		message.setSubject(subject);
 		message.setText(content);
-		message.setFrom(new InternetAddress("zhangjie0574@126.com"));
-		message.setRecipients(RecipientType.TO, addresses)
+		message.setFrom(new InternetAddress("760680733@qq.com"));
+		message.setRecipients(RecipientType.TO, new Address[]{new InternetAddress(toAddress)});
 		
 		Transport transport = session.getTransport();
 		transport.connect(USER_NAME, PASSWORD);
@@ -58,6 +59,6 @@ public class MailUtils {
 	}
 	
 	public static void main(String... args) throws Exception {
-		sendMail("zjie@aerohive.com", "Hello", "HelloWorld!");
+		sendMail("zhangjie0574@126.com", "Hello", "HelloWorld!");
 	}
 }
