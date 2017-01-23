@@ -36,7 +36,7 @@ public class MailUtils2 {
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mailMessage, true, "utf-8");
             helper.setFrom("760680733@qq.com");// 设置发件人
-            helper.setTo("zjie@aerohive.com");// 设置收件人
+            helper.setTo(new String[] {"760680733@qq.com", "zjie@aerohive.com"});// 设置收件人
 //            helper.setCc(cc);// 设置抄送
             helper.setSubject("Test");// 设置主题
             helper.setText("Hello");// 邮件体
