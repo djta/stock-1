@@ -7,6 +7,8 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import com.stock.model.json.StockPriceWarning;
+
 public class MailUtils2 {
 
 	public static JavaMailSenderImpl createJavaMailSenderImpl() {
@@ -50,9 +52,12 @@ public class MailUtils2 {
     }
 	
 	public static void main(String... args) {
-		String subject = "601766（中国中车）现价9.92";
-		String content = "大于 9.9 符合买入条件 ";
+		StockPriceWarning stockParam = new StockPriceWarning("601766", "中国中车", StockPriceWarning.StockOperation.Buy, 9.9f, ">=");
+		stockParam.setCurrentPrice(9f);
 		String[] toAddr = new String[]{"13777862834@139.com"};
-		sendMail(subject, content, toAddr);
+		
+		if (stockParam.isConditionMatch()) {
+			sendMail(stockParam.getMailSubject(), stockParam.getMailBody(), toAddr);
+		}
 	}
 }
