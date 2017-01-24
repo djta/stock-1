@@ -42,8 +42,8 @@ public class SmsUtils {
 	public static void main(String... args) {
 		try {
 			String phoneNum = "13777862834";
-			StockPriceWarning stockParam = new StockPriceWarning("601766", "中国中车", StockPriceWarning.StockOperation.Sell, 9.2f, "<=");
-			stockParam.setCurrentPrice(8.9f);
+			StockPriceWarning stockParam = new StockPriceWarning("601766", "中国中车", StockPriceWarning.StockOperation.Buy, ">=", 9.2f);
+			stockParam.setCurrentPrice(9.5f);
 			if (stockParam.isConditionMatch()) {
 				sendSms(stockParam, phoneNum);
 			}

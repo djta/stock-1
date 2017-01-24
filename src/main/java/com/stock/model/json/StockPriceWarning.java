@@ -1,35 +1,27 @@
 package com.stock.model.json;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @RequiredArgsConstructor
 public class StockPriceWarning {
 	
 	private static final String MAIL_BODY_FORMAT = "现价￥%.2f %s 设定价￥%.2f， 符合%s条件 ";
 	private static final String MONEY_FLAG = "￥";
+	private static final String SMS_TEMPLATE = "SMS_44190084";
 	
 	public enum StockOperation {
-		Buy("SMS_44090093"), Sell("SMS_44085048");
-		
-		@Getter
-		private String value;
-		
-		StockOperation(String value) {
-			this.value = value;
-		}
-		
+		Buy, Sell;
 	}
 
 	private final String stockCode;
 	private final String stockName;
 	private final StockOperation operation;
-	private final float goalPrice;
 	private final String condition;
+	private final float goalPrice;
 	
 	@Setter
 	private float currentPrice;
@@ -54,7 +46,7 @@ public class StockPriceWarning {
 	
 	@JsonIgnore
 	public String getSMSTemplateCode() {
-		return operation.getValue();
+		return SMS_TEMPLATE;
 	}
 	
 	@JsonProperty("name")
@@ -70,6 +62,17 @@ public class StockPriceWarning {
 	@JsonProperty("goalPrice")
 	public String getGoalPrice() {
 		return condition + MONEY_FLAG + goalPrice;
+	}
+	
+	@JsonProperty("operation")
+	public String getOperation() {
+		if (operation == StockOperation.Buy) {
+			return "_买买买 ";
+		} else if (operation == StockOperation.Sell) {
+			return "_卖卖卖";
+		} else {
+			return null;
+		}
 	}
 	
 	@JsonIgnore

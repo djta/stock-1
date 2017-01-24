@@ -52,7 +52,7 @@ public class MailUtils2 {
     }
 	
 	public static void main(String... args) {
-		StockPriceWarning stockParam = new StockPriceWarning("601766", "中国中车", StockPriceWarning.StockOperation.Buy, 9.9f, ">=");
+		StockPriceWarning stockParam = new StockPriceWarning("601766", "中国中车", StockPriceWarning.StockOperation.Buy, ">=", 9.9f);
 		stockParam.setCurrentPrice(9f);
 		String[] toAddr = new String[]{"13777862834@139.com"};
 		
