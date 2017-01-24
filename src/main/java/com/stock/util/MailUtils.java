@@ -13,8 +13,8 @@ import javax.mail.internet.MimeMessage;
 
 public class MailUtils {
 	
-	private static final String USER_NAME = "760680733";
-	private static final String PASSWORD = "mhnxqrzxicycbdbc";
+	private static final String USER_NAME = "13777862834@139.com";
+	private static final String PASSWORD = "1983a1113f";
 
 //	private static final Properties props = new Properties();
 	private static Session session;
@@ -31,11 +31,12 @@ public class MailUtils {
 	public static void sendMail(String toAddress, String subject, String content) throws Exception {
 		
 		Properties props = new Properties();
-		props.setProperty("mail.transport.protocol", "pop3");
-		props.setProperty("mail.host", "pop.qq.com");
-		props.setProperty("mail.smtp.port", "995");
-//		props.setProperty("mail.smtp.auth", "true");
+		props.setProperty("mail.transport.protocol", "smtp");
+		props.setProperty("mail.host", "smtp.139.com");
+		props.setProperty("mail.smtp.port", "465");
+		props.setProperty("mail.smtp.auth", "true");
 		props.setProperty("mail.debug", "true");
+		props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		
 		session = Session.getInstance(props, new Authenticator() {
 			 protected PasswordAuthentication getPasswordAuthentication() {
@@ -47,7 +48,7 @@ public class MailUtils {
 		
 		message.setSubject(subject);
 		message.setText(content);
-		message.setFrom(new InternetAddress("760680733@qq.com"));
+		message.setFrom(new InternetAddress("13777862834@139.com"));
 		message.setRecipients(RecipientType.TO, new Address[]{new InternetAddress(toAddress)});
 		
 		Transport transport = session.getTransport();
@@ -59,6 +60,6 @@ public class MailUtils {
 	}
 	
 	public static void main(String... args) throws Exception {
-		sendMail("zhangjie0574@126.com", "Hello", "HelloWorld!");
+		sendMail("760680733@qq.com", "Hello", "HelloWorld!");
 	}
 }
