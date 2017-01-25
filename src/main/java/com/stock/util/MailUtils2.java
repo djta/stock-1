@@ -52,12 +52,20 @@ public class MailUtils2 {
     }
 	
 	public static void main(String... args) {
-		StockPriceWarning stockParam = new StockPriceWarning("601766", "中国中车", StockPriceWarning.StockOperation.Sell, "<=", 9.9f);
-		stockParam.setCurrentPrice(9.87f);
-		String[] toAddr = new String[]{"13777862834@139.com"};
+		StockPriceWarning stockParam = new StockPriceWarning();
+		stockParam.setStockCode("601766");
+		stockParam.setStockName("中国中车");
+		stockParam.setOperation(StockPriceWarning.StockOperation.Sell);
+		stockParam.setCondition("<=");
+		stockParam.setGoalPrice(9.93f);
+		stockParam.setEmails(new String[]{"13777862834@139.com"});
 		
-		if (stockParam.isConditionMatch()) {
-			sendMail(stockParam.getMailSubject(), stockParam.getMailBody(), toAddr);
+		stockParam.setCurrentPrice(9.92f);
+		
+		if (stockParam.isTrigger()) {
+			for (String phoneNum : stockParam.getPhones()) {
+				sendMail(stockParam.getEmailSubject(), stockParam.getEmailBody(), phoneNum);
+			}
 		}
 	}
 }

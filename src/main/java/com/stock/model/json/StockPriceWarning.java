@@ -1,37 +1,24 @@
 package com.stock.model.json;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
-@RequiredArgsConstructor
-public class StockPriceWarning {
+@Data
+public class StockPriceWarning extends StockWarningAbstract {
 	
 	private static final String MAIL_BODY_FORMAT = "现价<font color='red' size='4'>￥%.2f</font> "
 					+ "<font color='blue' size='4'><B>%s</B></font> "
 					+ "设定价<font color='red' size='4'>￥%.2f</font>，"
 					+ " 符合<font color='#FF00FF' size='4'>%s</font>条件 ";
 	
-	private static final String MONEY_FLAG = "￥";
 	private static final String SMS_TEMPLATE = "SMS_44190084";
+	private static final String SMS_PARAM_FORMAT = "{name=\"%s\", currentPrice=\"￥%.2f\", goalPrice=\" %s￥%.2f\", operation=\"%s\"}";
 	
-	public enum StockOperation {
-		Buy, Sell;
-	}
-
-	private final String stockCode;
-	private final String stockName;
-	private final StockOperation operation;
-	private final String condition;
-	private final float goalPrice;
-	
-	@Setter
 	private float currentPrice;
+	private String condition;
+	private float goalPrice;
 	
-	@JsonIgnore
-	public boolean isConditionMatch() {
+	@Override
+	public boolean isTrigger() {
 		switch (condition) {
 		case "=":
 			return currentPrice == goalPrice;
@@ -48,28 +35,45 @@ public class StockPriceWarning {
 		}
 	}
 	
-	@JsonIgnore
+	@Override
 	public String getSMSTemplateCode() {
 		return SMS_TEMPLATE;
 	}
+
+	@Override
+	public String getSMSTemplateParam() {
+		return String.format(SMS_PARAM_FORMAT, getNameDes(), currentPrice, condition, goalPrice, getOperationDes() );
+	}
+
+	@Override
+	public String getEmailSubject() {
+		String operationStr = null;
+		if (operation == StockOperation.Buy) {
+			operationStr = "买买买 ";
+		} else if (operation == StockOperation.Sell) {
+			operationStr = "卖卖卖";
+		}
+		return operationStr + getNameDes();
+	}
+
+	@Override
+	public String getEmailBody() {
+		if (operation == StockOperation.Buy) {
+			return String.format(MAIL_BODY_FORMAT, currentPrice, condition, goalPrice, "买入");
+		} else if (operation == StockOperation.Sell) {
+			return String.format(MAIL_BODY_FORMAT, currentPrice, condition, goalPrice, "卖出");
+		}
+		return null;
+	}
 	
-	@JsonProperty("name")
-	public String getName() {
+	
+	/*** Private function start ***************************************************************/
+	
+	private String getNameDes() {
 		return stockCode + "("+stockName+")";
 	}
 	
-	@JsonProperty("currentPrice")
-	public String getCurrentPrice() {
-		return MONEY_FLAG + currentPrice;
-	}
-	
-	@JsonProperty("goalPrice")
-	public String getGoalPrice() {
-		return condition + MONEY_FLAG + goalPrice;
-	}
-	
-	@JsonProperty("operation")
-	public String getOperation() {
+	private String getOperationDes() {
 		if (operation == StockOperation.Buy) {
 			return "_买买买 ";
 		} else if (operation == StockOperation.Sell) {
@@ -78,25 +82,5 @@ public class StockPriceWarning {
 			return null;
 		}
 	}
-	
-	@JsonIgnore
-	public String getMailSubject() {
-		String operationStr = null;
-		if (operation == StockOperation.Buy) {
-			operationStr = "买买买 ";
-		} else if (operation == StockOperation.Sell) {
-			operationStr = "卖卖卖";
-		}
-		return operationStr + getName();
-	}
-	
-	@JsonIgnore
-	public String getMailBody() {
-		if (operation == StockOperation.Buy) {
-			return String.format(MAIL_BODY_FORMAT, currentPrice, condition, goalPrice, "买入");
-		} else if (operation == StockOperation.Sell) {
-			return String.format(MAIL_BODY_FORMAT, currentPrice, condition, goalPrice, "卖出");
-		}
-		return null;
-	}
+
 }

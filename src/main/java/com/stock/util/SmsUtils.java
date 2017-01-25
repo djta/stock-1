@@ -28,26 +28,34 @@ public class SmsUtils {
 		System.out.println(rsp.getBody());
 	}
 	
-	public static void sendSms(StockPriceWarning stockParam, String phoneNum) throws ApiException{
+	public static void sendSms(String stockParam, String phoneNum) throws ApiException{
 		AlibabaAliqinFcSmsNumSendRequest req = new AlibabaAliqinFcSmsNumSendRequest();
 		req.setSmsType(SMS_TYPE);
 		req.setSmsFreeSignName(SMS_SIGN_NAME);
 		req.setSmsParamString(JsonUtil.toJsonString(stockParam));
 		req.setRecNum(phoneNum);
-		req.setSmsTemplateCode(stockParam.getSMSTemplateCode());
+		req.setSmsTemplateCode(stockParam);
 		AlibabaAliqinFcSmsNumSendResponse rsp = TAOBAO_CLIENT.execute(req);
 		System.out.println(rsp.getBody());
 	}
 	
 	public static void main(String... args) {
 		try {
-			String phoneNum = "13777862834";
-			StockPriceWarning stockParam = new StockPriceWarning("601766", "中国中车", StockPriceWarning.StockOperation.Buy, ">=", 9.2f);
-			stockParam.setCurrentPrice(9.5f);
-			if (stockParam.isConditionMatch()) {
-				sendSms(stockParam, phoneNum);
+			StockPriceWarning stockParam = new StockPriceWarning();
+			stockParam.setStockCode("601766");
+			stockParam.setStockName("中国中车");
+			stockParam.setOperation(StockPriceWarning.StockOperation.Sell);
+			stockParam.setCondition("<=");
+			stockParam.setGoalPrice(9.93f);
+			stockParam.setPhones(new String[]{"13777862834"});
+			
+			stockParam.setCurrentPrice(9.2f);
+			if (stockParam.isTrigger()) {
+				for (String phoneNum : stockParam.getPhones()) {
+					sendSms(stockParam.getSMSTemplateParam(), phoneNum);
+				}
 			}
-		} catch (ApiException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
