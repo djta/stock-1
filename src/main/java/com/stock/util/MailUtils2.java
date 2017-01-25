@@ -41,7 +41,7 @@ public class MailUtils2 {
             helper.setTo(toAddress);// 设置收件人
 //            helper.setCc(cc);// 设置抄送
             helper.setSubject(subject);// 设置主题
-            helper.setText(content);// 邮件体
+            helper.setText(content, true);// 邮件体
             senderImpl.send(mailMessage);// 发送邮件
         } catch (Exception e) {
             try {
@@ -52,8 +52,8 @@ public class MailUtils2 {
     }
 	
 	public static void main(String... args) {
-		StockPriceWarning stockParam = new StockPriceWarning("601766", "中国中车", StockPriceWarning.StockOperation.Buy, ">=", 9.9f);
-		stockParam.setCurrentPrice(9f);
+		StockPriceWarning stockParam = new StockPriceWarning("601766", "中国中车", StockPriceWarning.StockOperation.Sell, "<=", 9.9f);
+		stockParam.setCurrentPrice(9.87f);
 		String[] toAddr = new String[]{"13777862834@139.com"};
 		
 		if (stockParam.isConditionMatch()) {

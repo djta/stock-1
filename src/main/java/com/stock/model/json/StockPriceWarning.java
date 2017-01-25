@@ -1,15 +1,19 @@
 package com.stock.model.json;
 
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @RequiredArgsConstructor
 public class StockPriceWarning {
 	
-	private static final String MAIL_BODY_FORMAT = "现价￥%.2f %s 设定价￥%.2f， 符合%s条件 ";
+	private static final String MAIL_BODY_FORMAT = "现价<font color='red' size='4'>￥%.2f</font> "
+					+ "<font color='blue' size='4'><B>%s</B></font> "
+					+ "设定价<font color='red' size='4'>￥%.2f</font>，"
+					+ " 符合<font color='#FF00FF' size='4'>%s</font>条件 ";
+	
 	private static final String MONEY_FLAG = "￥";
 	private static final String SMS_TEMPLATE = "SMS_44190084";
 	
