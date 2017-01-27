@@ -28,13 +28,15 @@ public class SmsUtils {
 		System.out.println(rsp.getBody());
 	}
 	
-	public static void sendSms(String stockParam, String phoneNum) throws ApiException{
+	public static void sendSms(String templateCode, String templateParams, String phoneNum) throws ApiException{
 		AlibabaAliqinFcSmsNumSendRequest req = new AlibabaAliqinFcSmsNumSendRequest();
 		req.setSmsType(SMS_TYPE);
 		req.setSmsFreeSignName(SMS_SIGN_NAME);
-		req.setSmsParamString(JsonUtil.toJsonString(stockParam));
+		
+		req.setSmsParamString(templateParams);
 		req.setRecNum(phoneNum);
-		req.setSmsTemplateCode(stockParam);
+		req.setSmsTemplateCode(templateCode);
+		
 		AlibabaAliqinFcSmsNumSendResponse rsp = TAOBAO_CLIENT.execute(req);
 		System.out.println(rsp.getBody());
 	}
@@ -52,7 +54,7 @@ public class SmsUtils {
 			stockParam.setCurrentPrice(9.2f);
 			if (stockParam.isTrigger()) {
 				for (String phoneNum : stockParam.getPhones()) {
-					sendSms(stockParam.getSMSTemplateParam(), phoneNum);
+					sendSms(stockParam.getSMSTemplateCode(), stockParam.getSMSTemplateParam(), phoneNum);
 				}
 			}
 		} catch (Exception e) {

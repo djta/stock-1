@@ -63,8 +63,8 @@ public class MailUtils2 {
 		stockParam.setCurrentPrice(9.92f);
 		
 		if (stockParam.isTrigger()) {
-			for (String phoneNum : stockParam.getPhones()) {
-				sendMail(stockParam.getEmailSubject(), stockParam.getEmailBody(), phoneNum);
+			for (String email : stockParam.getEmails()) {
+				sendMail(stockParam.getEmailSubject(), stockParam.getEmailBody(), email);
 			}
 		}
 	}

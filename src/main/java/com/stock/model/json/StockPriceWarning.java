@@ -8,10 +8,10 @@ public class StockPriceWarning extends StockWarningAbstract {
 	private static final String MAIL_BODY_FORMAT = "现价<font color='red' size='4'>￥%.2f</font> "
 					+ "<font color='blue' size='4'><B>%s</B></font> "
 					+ "设定价<font color='red' size='4'>￥%.2f</font>，"
-					+ " 符合<font color='#FF00FF' size='4'>%s</font>条件 ";
+					+ " 符合<font color='CD3700' size='4'>%s</font>条件 ";
 	
 	private static final String SMS_TEMPLATE = "SMS_44190084";
-	private static final String SMS_PARAM_FORMAT = "{name=\"%s\", currentPrice=\"￥%.2f\", goalPrice=\" %s￥%.2f\", operation=\"%s\"}";
+	private static final String SMS_PARAM_FORMAT = "{\"name\":\"%s\", \"currentPrice\":\"￥%.2f\", \"goalPrice\":\" %s￥%.2f\", \"operation\":\"%s\"}";
 	
 	private float currentPrice;
 	private String condition;
