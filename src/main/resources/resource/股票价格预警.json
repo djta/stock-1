@@ -1,0 +1,26 @@
+[
+
+{
+  "class" : "StockPriceWarning",
+  "enable" : true,
+  "stockCode" : "601766",
+  "stockName" : "中国中车",
+  "operation" : "Buy",
+  "phones" : [  ],
+  "emails" : [ "13777862834@139.com", "zhangjie0574@126.com" ],
+  "condition" : ">=",
+  "goalPrice" : 10.0
+},
+{
+  "class" : "StockPriceWarning",
+  "enable" : true,
+  "stockCode" : "600362",
+  "stockName" : "江西铜业",
+  "operation" : "Buy",
+  "phones" : [ ],
+  "emails" : [ "13777862834@139.com", "zhangjie0574@126.com" ],
+  "condition" : ">=",
+  "goalPrice" : 20.75
+}
+
+]

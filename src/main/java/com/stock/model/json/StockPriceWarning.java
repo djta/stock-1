@@ -1,8 +1,12 @@
 package com.stock.model.json;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
+@NoArgsConstructor
 public class StockPriceWarning extends StockWarningAbstract {
 	
 	private static final String MAIL_BODY_FORMAT = "现价<font color='red' size='4'>￥%.2f</font> "

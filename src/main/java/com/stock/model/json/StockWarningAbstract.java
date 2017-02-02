@@ -1,15 +1,16 @@
 package com.stock.model.json;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
-@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="class")
-@JsonSubTypes({
-    @JsonSubTypes.Type(value=StockPriceWarning.class),
-})
+//@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="class")
+//@JsonSubTypes({
+//    @JsonSubTypes.Type(value=StockPriceWarning.class),
+//})
 @Data
+@Accessors(chain = true)
+@NoArgsConstructor
 public abstract class StockWarningAbstract implements StockWarning {
 	
 	public enum StockOperation {Buy, Sell}

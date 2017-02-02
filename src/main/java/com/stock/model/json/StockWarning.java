@@ -1,5 +1,12 @@
 package com.stock.model.json;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="class")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value=StockPriceWarning.class),
+})
 public interface StockWarning {
 	
 	boolean isEnable();					//只有在enable状态下才能触发预警

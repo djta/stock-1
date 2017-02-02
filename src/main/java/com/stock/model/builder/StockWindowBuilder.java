@@ -42,6 +42,28 @@ public class StockWindowBuilder {
 		return null;
 	}
 	
+	public List<StockWindow> buildAllInstance(String content) {
+		if (StringUtils.isEmpty(content)) {
+			return null;
+		}
+		
+		List<StockWindow> allStockWindows = new ArrayList<>();
+		String[] contentArg = content.split("\n");
+		for (String line : contentArg) {
+			try{
+				StockWindow stockWin = buildInstance(line);
+				if (stockWin == null || stockWin.isValid() == false) {
+					continue;
+				}
+				allStockWindows.add(stockWin);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return allStockWindows;
+	}
+	
 	private interface StockWindowParser {
 		boolean isMatch(String content);
 		StockWindow parse(String content);
@@ -72,6 +94,8 @@ public class StockWindowBuilder {
 			stWindow.setTodayOpen(Float.valueOf(contentArg[1]));
 			stWindow.setYesterdayClose(Float.valueOf(contentArg[2]));
 			stWindow.setCurrentPrice(Float.valueOf(contentArg[3]));
+			stWindow.setHigh(Float.valueOf(contentArg[4]));
+			stWindow.setLow(Float.valueOf(contentArg[5]));
 			stWindow.setVol(Long.valueOf(contentArg[8]));
 			try {
 				stWindow.setDate(DATE_FORMAT.parse(contentArg[30] + " " + contentArg[31]));

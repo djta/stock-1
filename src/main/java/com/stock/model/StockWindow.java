@@ -24,6 +24,9 @@ public class StockWindow {
 	private float yesterdayClose;
 	private float currentPrice;
 	
+	private float high;
+	private float low;
+	
 	private int buyNum_1;
 	private int buyNum_2;
 	private int buyNum_3;
