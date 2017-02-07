@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -33,18 +35,24 @@ public class StockWarningProcessing implements StockProcessing {
 	private StockApiHelper apiHelper;
 	@Autowired
 	private StockWindowBuilder stockWindowBuilder;
+	
+	private List<StockWarning> allWarnings = new ArrayList<>();
 
 	@Override
 	public int getPriority() {
 		return 99;
 	}
+	
+	@PostConstruct
+	public void init() {
+		allWarnings = loadAllWarning();
+	}
 
 	@Override
 	public void process() {
-		List<StockWarning> allWarningList = loadAllWarning();
-		Map<String, StockWindow> allStockWindows = getAllStockDetail(allWarningList);
+		Map<String, StockWindow> allStockWindows = getAllStockDetail(allWarnings);
 		
-		for (StockWarning warning : allWarningList) {
+		for (StockWarning warning : allWarnings) {
 			if (warning.isEnable() == false) {
 				continue;
 			}

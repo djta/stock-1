@@ -21,4 +21,7 @@ public abstract class StockWarningAbstract implements StockWarning {
 	protected StockOperation operation;
 	protected String[] phones;
 	protected String[] emails;
+	
+	@Override
+	public void prepare(){}
 }

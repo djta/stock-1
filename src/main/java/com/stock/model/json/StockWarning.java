@@ -6,12 +6,15 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="class")
 @JsonSubTypes({
     @JsonSubTypes.Type(value=StockPriceWarning.class),
+    @JsonSubTypes.Type(value=StockFenXingWarning.class),
 })
 public interface StockWarning {
 	
 	boolean isEnable();					//只有在enable状态下才能触发预警
 
 	boolean isTrigger();				//是否瞒住条件触发预警
+	
+	void prepare();
 	
 	String getStockCode();				//获取股票代码
 			

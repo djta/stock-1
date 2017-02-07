@@ -32,6 +32,10 @@ public class StockApiHelper {
 	
 	public static final String GET_ALL_STOCK = "http://money.finance.sina.com.cn/d/api/openapi_proxy.php/?__s=[[\"hq\",\"hs_a\",\"\",0,%d,80]]&callback=FDC_DC.theTableData";
 	
+	public static final String GET_K_LINE_MONTH = "http://img1.money.126.net/data/hs/kline/month/history/2011/1000885.json?";
+	public static final String GET_K_LINE_WEEK = "http://img1.money.126.net/data/hs/kline/week/history/2015/1000885.json?";
+	public static final String GET_K_LINE_DAY = "http://img1.money.126.net/data/hs/kline/day/history/2016/1000885.json?";
+	
 	public static final String CODE_CN = "gb2312";
 	public static final String CODE_UTF_8 = "UTF-8";
 	public static final String CODE_IOS_8859_1 = "ISO8859-1";
