@@ -1,9 +1,12 @@
 package com.stock.model.json;
 
-import java.util.Date;
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.LinkedList;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stock.model.StockLineK;
+import com.stock.util.JsonUtil;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,8 +24,11 @@ public class StockFenXingWarning extends StockWarningAbstract {
 	private FenXingCycle cycle;
 	private Date startDate;
 	
+	@JsonIgnore
 	private LinkedList<StockLineK> hisKLines;
+	@JsonIgnore
 	private float high;
+	@JsonIgnore
 	private float low;
 	
 	@Override
@@ -31,6 +37,7 @@ public class StockFenXingWarning extends StockWarningAbstract {
 	}
 
 	@Override
+	@JsonIgnore
 	public boolean isTrigger() {
 		StockLineK kLineLast = hisKLines.getLast();
 		
@@ -65,6 +72,15 @@ public class StockFenXingWarning extends StockWarningAbstract {
 	public String getEmailBody() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public static void main(String... args) {
+		StockFenXingWarning warning = new StockFenXingWarning();
+		warning.setCycle(FenXingCycle.Month)
+		.setType(FenXingType.Bottom)
+		.setStartDate(new Date(System.currentTimeMillis()));
+		
+		System.out.println(JsonUtil.toJsonString(warning));
 	}
 
 }

@@ -95,7 +95,7 @@ public class StockMessageHolder2 {
 		
 		Resource stockRes = resolver.getResource("classpath:resource/所有A股.txt");
 		IOUtils.write(stockBuilder.toString().getBytes(), new FileOutputStream(stockRes.getFile()));
-		IOUtils.write(stockBuilder.toString().getBytes(), new FileOutputStream(new File("D:\\Development\\eclipse\\workspace\\stock\\src\\main\\resources\\resource\\所有A股.txt")));
+		IOUtils.write(stockBuilder.toString().getBytes(), new FileOutputStream(new File("src\\main\\resources\\resource\\所有A股.txt")));
 	}
 	
 	private List<StockMessage> loadLatestStockMessage(int pageIndex) throws Exception {
