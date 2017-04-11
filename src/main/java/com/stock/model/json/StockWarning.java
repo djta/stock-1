@@ -14,8 +14,6 @@ public interface StockWarning {
 
 	boolean isTrigger();				//是否瞒住条件触发预警
 	
-	void prepare();
-	
 	String getStockCode();				//获取股票代码
 			
 	String getStockName();				//获取股票名字

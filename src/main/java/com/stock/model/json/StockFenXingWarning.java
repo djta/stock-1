@@ -1,12 +1,11 @@
 package com.stock.model.json;
 
-import java.sql.Date;
-import java.util.Calendar;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stock.model.StockLineK;
-import com.stock.util.JsonUtil;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,9 +19,11 @@ public class StockFenXingWarning extends StockWarningAbstract {
 	public enum FenXingType 	{Bottom, Top}
 	public enum FenXingCycle 	{Month, Week, Day, Min_60, Min_30, Min_15, Min_5}
 	
+	private static final Pattern  DATE_PATTERN = Pattern.compile("^(\\d{4})(\\-|\\/|\\.)\\d{1,2}\\2\\d{1,2}$");
+	
 	private FenXingType type;
 	private FenXingCycle cycle;
-	private Date startDate;
+	private String startDate;
 	
 	@JsonIgnore
 	private LinkedList<StockLineK> hisKLines;
@@ -30,11 +31,6 @@ public class StockFenXingWarning extends StockWarningAbstract {
 	private float high;
 	@JsonIgnore
 	private float low;
-	
-	@Override
-	public void prepare() {
-		
-	}
 
 	@Override
 	@JsonIgnore
@@ -75,12 +71,22 @@ public class StockFenXingWarning extends StockWarningAbstract {
 	}
 	
 	public static void main(String... args) {
-		StockFenXingWarning warning = new StockFenXingWarning();
-		warning.setCycle(FenXingCycle.Month)
-		.setType(FenXingType.Bottom)
-		.setStartDate(new Date(System.currentTimeMillis()));
+//		StockFenXingWarning warning = new StockFenXingWarning();
+//		warning.setCycle(FenXingCycle.Month)
+//		.setType(FenXingType.Bottom)
+//		.setStartDate(new Date(System.currentTimeMillis()));
 		
-		System.out.println(JsonUtil.toJsonString(warning));
+//		System.out.println(JsonUtil.toJsonString(warning));
+		
+		String dateStr = "2017-1-4";
+		Matcher matcher = DATE_PATTERN.matcher(dateStr);
+		System.out.println(matcher.matches());
+		if (matcher.matches()) {
+			System.out.println(matcher.group(0));
+			System.out.println(matcher.group(1));
+			System.out.println(matcher.group(2));
+			System.out.println(matcher.group(3));
+		}
 	}
 
 }
