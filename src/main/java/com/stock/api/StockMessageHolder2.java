@@ -24,7 +24,7 @@ import com.stock.util.MessageUtil;
 @Component
 public class StockMessageHolder2 {
 	
-	public static final boolean getLatest = false;
+	public static final boolean getLatest = true;
 	
 	@Autowired
 	private PathMatchingResourcePatternResolver resolver;
